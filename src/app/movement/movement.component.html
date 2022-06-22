@@ -1,0 +1,147 @@
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" style="color:white;">Gestione Movimenti</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02"
+    aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarColor02">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" data-toggle="modal" data-target="#addMovementModal">Add Movement<span
+            class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" routerLink="/" routerLinkActive="active" ariaCurrentWhenActive="page">
+          Client</a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" routerLink="/account" routerLinkActive="active" ariaCurrentWhenActive="page">
+          Accounts</a>
+      </li>
+    </ul>
+
+  </div>
+</nav>
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="main-box clearfix">
+        <div class="table-responsive">
+          <table class="table user-list">
+            <thead>
+              <tr>
+                <th><span>Id</span></th>
+                <th><span>Type</span></th>
+                <th class="text-center"><span>Amount</span></th>
+                <th><span>Balance</span></th>
+                <th><span>Data</span></th>
+                <th>&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let movement of movements">
+                <td>
+                  {{ movement.movementId }}
+                </td>
+                <td>
+                  {{ movement.type }}
+                </td>
+                <td class="text-center">
+                  <span class="label label-default">{{movement.amount}}</span>
+                </td>
+                <td>
+                  <a href="#">{{ movement.balance }}</a>
+                </td>
+                <td>
+                  <a href="#">{{ movement.dataMovement }}</a>
+                </td>
+                <td style="width: 20%;">
+
+                  <a href="#" class="table-link danger" (click)="onOpenDeleteMovementModal(movement)"
+                    data-toggle="modal" data-target="#deleteMovementModal">
+                    <span class="fa-stack">
+                      <i class="fa fa-square fa-stack-2x"></i>
+                      <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
+                    </span>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Movement Modal -->
+<div class="modal fade" id="addMovementModal" tabindex="-1" role="dialog" aria-labelledby="addMovementModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addMovementModalLabel">Add Movement</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+          <div class="d-grid">
+            <select class="custom-select mb-3" (change)="changeAccount($event)" formControlName="accountId">
+              <option value="">Choose Account</option>
+              <option *ngFor="let account of accounts" [ngValue]="account.accountId">
+                {{ account.accountId }}
+              </option>
+            </select>
+            <!-- error block -->
+            <div class="invalid-feedback" *ngIf="isSubmitted && accountId?.invalid">
+              <sup>*</sup>Please provide account name
+            </div>
+
+            <input type="text" class="form-control" formControlName="type" placeholder="Prelievo o Deposito">
+            <input type="number" class="form-control" formControlName="amount" placeholder="Amount">
+            <button type="submit" class="btn btn-danger btn-lg btn-block">
+              Submit
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteMovementModal" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModelLabel">Delete Movement</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete movement {{movementToDelete?.movementId}} ?</p>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+          <button (click)="onDeleteMovement(movementToDelete.movementId)" class="btn btn-danger"
+            data-dismiss="modal">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Notification for no movements -->
+<div *ngIf="movements?.length == 0" class="col-lg-12 col-md-12 col-xl-12">
+  <div class="alert alert-info" role="alert">
+    <h4 class="alert-heading">NO Movements!</h4>
+    <p>No movements were found.</p>
+  </div>
+</div>

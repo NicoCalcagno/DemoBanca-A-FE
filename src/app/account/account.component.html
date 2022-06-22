@@ -1,0 +1,139 @@
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" style="color:white;">Gestione conti</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02"
+    aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarColor02">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" data-toggle="modal" data-target="#addAccountModal">Add Account<span
+            class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" routerLink="/" routerLinkActive="active" ariaCurrentWhenActive="page">
+          Clients</a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" routerLink="/movement" routerLinkActive="active" ariaCurrentWhenActive="page">
+          Movements</a>
+      </li>
+    </ul>
+
+  </div>
+</nav>
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="main-box clearfix">
+        <div class="table-responsive">
+          <table class="table user-list">
+            <thead>
+              <tr>
+
+                <th><span>Account</span></th>
+                <th class="text-center"><span>Balance</span></th>
+                <th>&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let account of accounts">
+
+                <td>
+                  {{ account.accountId }}
+                </td>
+                <td class="text-center">
+                  <span class="label label-default">{{account.balance}}</span>
+                </td>
+                <td style="width: 20%;">
+                  <a href="#" class="table-link danger" (click)="onOpenDeleteAccountModal(account)" data-toggle="modal"
+                    data-target="#deleteAccountModal">
+                    <span class="fa-stack">
+                      <i class="fa fa-square fa-stack-2x"></i>
+                      <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
+                    </span>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<!-- Add Account Modal -->
+<div class="modal fade" id="addAccountModal" tabindex="-1" role="dialog" aria-labelledby="addAccountModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addAccountModalLabel">Add Account</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+          <div class="d-grid">
+            <select class="custom-select mb-3" (change)="changeClient($event)" formControlName="client">
+              <option value="">Choose Client</option>
+              <option *ngFor="let client of clients" [ngValue]="client.clientId">
+                {{client.clientId}} - {{ client.name }} {{client.surname}}
+              </option>
+            </select>
+            <!-- error block -->
+            <div class="invalid-feedback" *ngIf="isSubmitted && client?.invalid">
+              <sup>*</sup>Please provide client name
+            </div>
+
+            <input type="hidden" formControlName="balance" [ngModel]="0">
+            <button type="submit" class="btn btn-danger btn-lg btn-block">
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModelLabel">Delete Account</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete account {{accountToDelete?.accountId}}?</p>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+          <button (click)="onDeleteAccount(accountToDelete.accountId)" class="btn btn-danger"
+            data-dismiss="modal">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Notification for no accounts -->
+<div *ngIf="accounts?.length == 0" class="col-lg-12 col-md-12 col-xl-12">
+  <div class="alert alert-info" role="alert">
+    <h4 class="alert-heading">NO Accounts!</h4>
+    <p>No Accounts were found.</p>
+  </div>
+</div>
